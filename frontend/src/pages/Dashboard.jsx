@@ -22,10 +22,13 @@ const Dashboard = () => {
     const [historyLoading, setHistoryLoading] = useState(true);
     const inputRef = useRef(null);
 
-    // Redirect to landing if not authenticated
+    // Redirect to landing if not authenticated and no token exists
     useEffect(() => {
         if (!authLoading && !user) {
-            navigate("/", { replace: true });
+            const token = localStorage.getItem("scrmail_token");
+            if (!token) {
+                navigate("/", { replace: true });
+            }
         }
     }, [authLoading, user, navigate]);
 
