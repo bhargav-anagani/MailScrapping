@@ -10,6 +10,10 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const gmailRoutes = require("./routes/gmail");
 const historyRoutes = require("./routes/history");
+const scrapeRoutes = require("./routes/scrape");
+
+// Workers
+const scrapeWorker = require("./workers/scrapeWorker");
 
 // Connect to MongoDB
 connectDB();
@@ -54,6 +58,7 @@ app.use(passport.session());
 app.use("/api/auth", authRoutes);
 app.use("/api/gmail", gmailRoutes);
 app.use("/api/history", historyRoutes);
+app.use("/api/scrape", scrapeRoutes);
 
 // Health check
 app.get("/", (req, res) => {
@@ -75,4 +80,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 ScrMail server running on http://localhost:${PORT}`);
+    
+    // Start background background worker for scraping processing
+    scrapeWorker.startWorker();
 });
